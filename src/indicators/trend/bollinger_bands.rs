@@ -20,9 +20,9 @@ where
 
 #[derive(PartialEq, Debug)]
 pub struct BollingerBandResult {
-    upper: f64,
-    middle: f64,
-    lower: f64,
+    pub upper: f64,
+    pub middle: f64,
+    pub lower: f64,
 }
 
 impl<T: indicators::MovingAverage<f64> + Clone> BollingerBandFactory<T> {

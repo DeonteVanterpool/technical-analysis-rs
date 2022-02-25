@@ -14,9 +14,9 @@ where
 
 #[derive(PartialEq, Debug)]
 pub struct MacdResult {
-    macd: f64,
-    signal: f64,
-    histogram: f64,
+    pub macd: f64,
+    pub signal: f64,
+    pub histogram: f64,
 }
 
 pub struct MACD<T, U, V>
