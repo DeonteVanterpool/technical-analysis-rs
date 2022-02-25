@@ -17,8 +17,8 @@ struct CHL {
 
 #[derive(PartialEq, Debug)]
 pub struct PsarResult {
-    trend: PsarTrend,
-    sar: f64,
+    pub trend: PsarTrend,
+    pub sar: f64,
 }
 
 impl Close for CHL {
