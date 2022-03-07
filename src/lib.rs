@@ -36,6 +36,8 @@
 mod candle;
 pub use candle::Candle;
 
+mod helpers;
+
 pub mod indicator;
 pub use indicator::*;
 

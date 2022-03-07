@@ -1,4 +1,5 @@
 use crate::*;
+use helpers::*;
 use anyhow::Error;
 
 pub struct AtrFactory {
@@ -23,6 +24,7 @@ impl AtrFactory {
     }
 
     pub fn build(self) -> Result<ATR, Error> {
+        check_window_size(self.window_size)?;
         Ok(ATR {
             window_size: self.window_size,
             prev_atr: 0.0,

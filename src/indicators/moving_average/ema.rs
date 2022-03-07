@@ -1,5 +1,6 @@
 use crate::*;
-use anyhow::Error;
+use helpers::*;
+use anyhow::{Error, anyhow};
 
 pub struct EmaFactory {
     window_size: usize,
@@ -33,6 +34,10 @@ impl EmaFactory {
     }
 
     pub fn build(self) -> Result<EMA, Error> {
+        check_window_size(self.window_size)?;
+        if self.smoothing <= 0.0 || !self.smoothing.is_finite() {
+            return Err(anyhow!("Smoothing value must be greater than zero and a real number. You used {}", self.smoothing));
+        }
         Ok(EMA {
             window_size: self.window_size,
             k: self.smoothing / (self.window_size as f64 + 1.0),

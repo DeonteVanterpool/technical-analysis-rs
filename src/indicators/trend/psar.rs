@@ -1,4 +1,4 @@
-use anyhow::Error;
+use anyhow::{Error, anyhow};
 
 use crate::*;
 
@@ -76,6 +76,12 @@ impl PsarFactory {
     }
 
     pub fn build(self) -> Result<PSAR, Error> {
+        if self.af_step <= 0.0 || !self.af_step.is_finite() {
+            return Err(anyhow!("Max acceleration must be greater than zero, and a real number. You used {}", self.af_step));
+        }
+        if self.af_max <= 0.0 || !self.af_max.is_finite() {
+            return Err(anyhow!("Max acceleration must be greater than zero, and a real number. You used {}", self.af_max));
+        }
         Ok(PSAR {
             max_accel: self.af_max,
             accel_step: self.af_step,

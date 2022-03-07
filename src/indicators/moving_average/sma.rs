@@ -1,3 +1,4 @@
+use crate::helpers::check_window_size;
 use anyhow::Error;
 use std::collections::VecDeque;
 
@@ -22,6 +23,7 @@ impl SmaFactory {
         Self { window_size }
     }
     pub fn build(self) -> Result<SMA, Error> {
+        check_window_size(self.window_size)?;
         Ok(SMA {
             window: VecDeque::new(),
             window_size: self.window_size,

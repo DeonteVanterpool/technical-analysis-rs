@@ -1,5 +1,5 @@
 use crate::{indicators::SD, *};
-use anyhow::Error;
+use anyhow::{Error, anyhow};
 
 pub struct BollingerBandFactory<T>
 where
@@ -52,6 +52,9 @@ impl<T: indicators::MovingAverage<f64> + Clone> BollingerBandFactory<T> {
     }
 
     pub fn build(self) -> Result<BollingerBand<T>, Error> {
+        if self.standard_deviation <= 0.0 || !self.standard_deviation.is_finite() {
+            return Err(anyhow!("Standard deviation must be greater than zero and a real number. You used {}", self.standard_deviation));
+        }
         Ok(BollingerBand {
             standard_deviation: self.standard_deviation,
             middle_band: self.middle_band.clone(),
