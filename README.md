@@ -1,6 +1,6 @@
 # technical-analysis-rs
 
-technical_analysis is a cool Rust library that allows you to use conveniently technical indicators.
+technical_analysis is a cool **unfinished** Rust library that allows you to use conveniently technical indicators.
 Indicators imlement the Indicator trait, which allows you to call the `next(data_item: f64) -> Option<Self::Output>` method.
 Use existing indicators like so:
 
@@ -41,5 +41,5 @@ impl Indicator<f64> for MyIndicator {
 ## Todo
 
 - Documentation
-- Check errors for invalid inputs
+- Add method checked_next to indicators, which input value checks
 - Add VPT, ADX, Aroon, Stochastic Indicator, Stochastic RSI, Volume RSI, and more indicators
