@@ -14,8 +14,6 @@ where
 {
     moving_average: T,
     squares_average: T,
-    window: VecDeque<f64>,
-    window_size: usize,
 }
 
 impl<T: indicators::MovingAverage<f64> + Clone> SdFactory<T> {
@@ -34,10 +32,8 @@ impl<T: indicators::MovingAverage<f64> + Clone> SdFactory<T> {
 
     pub fn build(self) -> Result<SD<T>, Error> {
         Ok(SD {
-            window_size: self.moving_average.window_size(),
             moving_average: self.moving_average.clone(),
             squares_average: self.moving_average,
-            window: VecDeque::new(),
         })
     }
 }
