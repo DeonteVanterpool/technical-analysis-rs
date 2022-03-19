@@ -4,17 +4,18 @@ use crate::indicator::*;
 
 #[derive(Clone, Debug)]
 pub struct Candle {
-    open: f64,
-    close: f64,
-    high: f64,
-    low: f64,
-    volume: u64,
+    pub open: f64,
+    pub close: f64,
+    pub high: f64,
+    pub low: f64,
+    pub volume: u64,
 }
 
+/// `Candle`s are the default data item. They may be used as an input to any indicator, as they
+/// implement `Open`, `Close`, `High`, `Low`, and `Volume`
 impl Candle {
     pub fn new(open: f64, close: f64, high: f64, low: f64, volume: u64) -> Result<Candle, Error> {
-        // Add cases for open > high, etc, boi
-        if low <= high {
+        if [open, close, low].into_iter().all(|x| x <= high) && [open, close].into_iter().all(|x| x >= low) {
             Ok(Candle {
                 open,
                 close,
@@ -24,9 +25,12 @@ impl Candle {
             })
         } else {
             Err(anyhow!(
-                "Low ({}) on candle greater than high ({})!",
+                "Unclean candle! Open: {}, Close: {}, High: {}, Low: {}, Volume: {}",
+                open,
+                close,
                 low,
-                high
+                high,
+                volume,
             ))
         }
     }

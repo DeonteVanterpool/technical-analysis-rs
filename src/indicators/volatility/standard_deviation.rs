@@ -1,30 +1,31 @@
-use std::collections::VecDeque;
 use crate::*;
 use anyhow::Error;
+use std::collections::VecDeque;
 pub struct SdFactory<T>
 where
-    T: indicators::MovingAverage<f64>,
+    T: indicators::MovingAverage<f64> + Clone,
 {
     moving_average: T,
 }
 
 pub struct SD<T>
 where
-    T: indicators::MovingAverage<f64>,
+    T: indicators::MovingAverage<f64> + Clone,
 {
     moving_average: T,
+    squares_average: T,
     window: VecDeque<f64>,
     window_size: usize,
 }
 
-impl<T: indicators::MovingAverage<f64>> SdFactory<T> {
+impl<T: indicators::MovingAverage<f64> + Clone> SdFactory<T> {
     pub fn new() -> SdFactory<indicators::SMA> {
         SdFactory {
             moving_average: indicators::SMA::factory().build().unwrap(),
         }
     }
 
-    pub fn with_moving_average<U: indicators::MovingAverage<f64>>(
+    pub fn with_moving_average<U: indicators::MovingAverage<f64> + Clone>(
         self,
         moving_average: U,
     ) -> SdFactory<U> {
@@ -34,33 +35,24 @@ impl<T: indicators::MovingAverage<f64>> SdFactory<T> {
     pub fn build(self) -> Result<SD<T>, Error> {
         Ok(SD {
             window_size: self.moving_average.window_size(),
-            moving_average: self.moving_average,
+            moving_average: self.moving_average.clone(),
+            squares_average: self.moving_average,
             window: VecDeque::new(),
         })
     }
 }
 
-impl<T: indicators::MovingAverage<f64>, U: Close> Indicator<U> for SD<T> {
+impl<T: indicators::MovingAverage<f64> + Clone, U: Close> Indicator<U> for SD<T> {
     type Output = f64;
     fn next(&mut self, next: U) -> Self::Output {
-        let avg = self.moving_average.next(next.close());
+        let average = self.moving_average.next(next.close());
+        let squares_average = self.squares_average.next(next.close().powi(2));
 
-        self.window.push_back(next.close());
-        if self.window.len() > self.window_size {
-            self.window.pop_front().unwrap();
-        }
-
-        (self
-            .window
-            .iter()
-            .map(|close| (close - avg).powi(2))
-            .sum::<f64>()
-            / (self.window.len() as f64))
-            .sqrt()
+        (squares_average - average.powi(2)).abs().sqrt()
     }
 }
 
-impl<T: indicators::MovingAverage<f64>> SD<T> {
+impl<T: indicators::MovingAverage<f64> + Clone> SD<T> {
     pub fn factory() -> SdFactory<indicators::SMA> {
         SdFactory::<T>::new()
     }
@@ -87,7 +79,7 @@ mod tests {
 
         assert_eq!(sd.next(10.0), 0.0);
         assert_eq!(sd.next(20.0), 5.0);
-        assert_eq!(sd.next(15.0), 4.08248290463863);
+        assert_eq!(sd.next(15.0), 4.082482904638629);
         assert_eq!(sd.next(10.0), 4.14578098794425);
         assert_eq!(sd.next(10.0), 4.0);
         assert_eq!(sd.next(10.0), 4.0);

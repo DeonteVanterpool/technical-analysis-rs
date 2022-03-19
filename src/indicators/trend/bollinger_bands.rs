@@ -135,9 +135,9 @@ mod tests {
         assert_eq!(
             bollinger_band.next(15.0),
             BollingerBandResult {
-                upper: 23.164965809277263,
+                upper: 23.164965809277255,
                 middle: 15.0,
-                lower: 6.835034190722739,
+                lower: 6.835034190722743,
             }
         );
 
