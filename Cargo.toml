@@ -7,3 +7,11 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
+criterion = "0.3"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "indicators_benchmark"
+harness = false

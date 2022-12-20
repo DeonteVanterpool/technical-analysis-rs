@@ -102,6 +102,7 @@ impl PsarFactory {
 
 impl<T: Close + High + Low> crate::Indicator<T> for PSAR {
     type Output = PsarResult;
+
     fn next(&mut self, next: T) -> Self::Output {
         match self.trend {
             PsarTrend::Up => {
