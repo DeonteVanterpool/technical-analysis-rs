@@ -50,22 +50,16 @@ pub struct SMA {
 impl<T: Close> crate::Indicator<T> for SMA {
     type Output = f64;
 
-    fn next(&mut self, input: T) -> Self::Output {
-        let old_val = self.deque[self.index];
-        self.deque[self.index] = input.close();
-
-        self.index = if self.index + 1 < self.period {
-            self.index + 1
-        } else {
-            0
-        };
-
-        if self.count < self.period {
-            self.count += 1;
-        }
-
-        self.sum = self.sum - old_val + input.close();
-        self.sum / (self.count as f64)
+ fn next(&mut self, input: T) -> Self::Output {
+    let old_val = self.deque[self.index];
+    let new_val = input.close();
+    self.deque[self.index] = new_val;
+    self.index = (self.index + 1) % self.period;
+    let count = self.index.min(self.count + 1);
+    let sum = self.sum + new_val - old_val;
+    self.count = count;
+    self.sum = sum;
+    sum / (count as f64)
     }
 }
 

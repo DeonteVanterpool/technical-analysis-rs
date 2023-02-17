@@ -41,8 +41,9 @@ impl<T: indicators::MovingAverage<f64> + Clone> SdFactory<T> {
 impl<T: indicators::MovingAverage<f64> + Clone, U: Close> Indicator<U> for SD<T> {
     type Output = f64;
     fn next(&mut self, next: U) -> Self::Output {
-        let average = self.moving_average.next(next.close());
-        let squares_average = self.squares_average.next(next.close().powi(2));
+        let new = next.close();
+        let average = self.moving_average.next(new);
+        let squares_average = self.squares_average.next(new.powi(2));
 
         (squares_average - average.powi(2)).abs().sqrt()
     }

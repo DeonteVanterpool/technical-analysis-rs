@@ -52,14 +52,15 @@ impl<T: indicators::MovingAverage<f64>, U: Close> Indicator<U> for RSI<T> {
     fn next(&mut self, next: U) -> Self::Output {
         let mut up = 0.0;
         let mut down = 0.0;
+        let new = next.close();
 
         if self.is_new {
             self.is_new = false;
         } else {
-            if next.close() > self.prev {
-                up = next.close() - self.prev;
+            if new > self.prev {
+                up = new - self.prev;
             } else {
-                down = self.prev - next.close();
+                down = self.prev - new;
             }
         }
 
@@ -71,7 +72,7 @@ impl<T: indicators::MovingAverage<f64>, U: Close> Indicator<U> for RSI<T> {
             down = 4.94065645841e-324;
         }
 
-        self.prev = next.close();
+        self.prev = new;
         let up_ema = self.up_indicator.next(up);
         let down_ema = self.down_indicator.next(down);
         100.0 - (100.0 / (1.0 + (up_ema / down_ema)))

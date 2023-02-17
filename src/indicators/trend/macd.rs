@@ -104,8 +104,9 @@ impl<
 {
     type Output = MacdResult;
     fn next(&mut self, next: X) -> Self::Output {
-        let fast = self.fast_ma.next(next.close());
-        let slow = self.slow_ma.next(next.close());
+        let new = next.close();
+        let fast = self.fast_ma.next(new);
+        let slow = self.slow_ma.next(new);
 
         let macd = fast - slow;
         let signal = self.signal_ma.next(macd);

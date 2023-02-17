@@ -69,8 +69,9 @@ impl<T: indicators::MovingAverage<f64> + Clone> BollingerBandFactory<T> {
 impl<T: indicators::MovingAverage<f64> + Clone, U: Close> Indicator<U> for BollingerBand<T> {
     type Output = BollingerBandResult;
     fn next(&mut self, next: U) -> Self::Output {
-        let deviation = self.standard_deviation_indicator.next(next.close());
-        let middle = self.middle_band.next(next.close());
+        let new = next.close();
+        let deviation = self.standard_deviation_indicator.next(new);
+        let middle = self.middle_band.next(new);
         BollingerBandResult {
             upper: middle + deviation * self.standard_deviation,
             middle,
